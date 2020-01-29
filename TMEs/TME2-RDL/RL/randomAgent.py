@@ -29,7 +29,7 @@ if __name__ == '__main__':
     env.render(mode="human") #visualisation sur la console
     statedic, mdp = env.getMDP()  # recupere le mdp : statedic
     print("Nombre d'etats : ",len(statedic))  # nombre d'etats ,statedic : etat-> numero de l'etat
-    state, transitions = list(mdp.items())[0]
+    state, transitions = list(mdp.items())
     print(state)  # un etat du mdp
     print(transitions)  # dictionnaire des transitions pour l'etat :  {action-> [proba,etat,reward,done]}
 
@@ -48,6 +48,7 @@ if __name__ == '__main__':
     FPS = 0.0001
     for i in range(episode_count):
         obs = envm.reset()
+        #print(obs)
         env.verbose = (i % 100 == 0 and i > 0)  # afficher 1 episode sur 100
         if env.verbose:
             env.render(FPS)
@@ -61,7 +62,7 @@ if __name__ == '__main__':
             if env.verbose:
                 env.render(FPS)
             if done:
-                print("Episode : " + str(i) + " rsum=" + str(rsum) + ", " + str(j) + " actions")
+                #print("Episode : " + str(i) + " rsum=" + str(rsum) + ", " + str(j) + " actions")
                 break
 
     print("done")
