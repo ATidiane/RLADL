@@ -1,0 +1,50 @@
+import matplotlib
+
+matplotlib.use("TkAgg")
+import gridworld
+import numpy as np
+import copy
+
+
+class PolicyIteration:
+    def __init__(self, action_space, statedic, mdp, epsilon=1e5, gamma=0.99):
+        """
+
+        """
+        self.action_space = action_space
+        self.statedic = statedic
+        self.states = [s for s in statedic]
+        self.P = mdp
+        self.epsilon = epsilon
+        self.gamma = gamma
+        self.non_term_states = [s for s in mdp]
+
+        self.pik = [None for s in self.non_term_states]
+        pik_plus = {s: self.action_space.sample() for s in self.non_term_states}
+
+        while self.pi != pi_kplus:
+            self.pi = dict(pi_kplus)
+            Vi = dict(zip(self.states, np.random.random(len(self.states))))
+            Vi_plus = dict(zip(self.states, np.zeros(len(self.states))))
+
+            for s in self.non_term_states:
+                Vi_plus[s] = np.max([np.sum([proba * (reward + self.gamma * Vi[s_prime])
+                                             for (proba, s_prime, reward, boolean) in self.P[s][a]])
+                                     for a in range(self.action_space.n)])
+                
+            while np.linalg.norm(np.array(list(Vi.values())) - np.array(list(Vi_plus.values())), ord=np.inf) > epsilon:
+                Vi = copy.deepcopy(Vi_plus)
+                for s in self.non_term_states:
+                    Vi_plus[s] = np.max([np.sum([proba * (reward + self.gamma * Vi[s_prime])
+                                                for (proba, s_prime, reward, boolean) in self.P[s][a]])
+                                         for a in range(self.action_space.n)])
+
+            for s in self.non_term_states:
+                pik_plus[s] = np.argmax([np.sum([proba * (reward + self.gamma * Vi[s_prime])
+                                                for (proba, s_prime, reward, boolean) in self.P[s][a]])
+                                        for a in range(self.action_space.n)])
+                
+        self.pi = dict(pi_kplus)
+
+    def act(self, observation, reward, done):
+        return self.pi[gridworld.GridworldEnv.state2str(observation)]
